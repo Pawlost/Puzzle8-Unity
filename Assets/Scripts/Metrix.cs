@@ -17,15 +17,17 @@ public class Metrix : MonoBehaviour{
         int[,] grid = new int[3,3];
 
         grid[0, 0] = int.Parse(cell.text);
-        grid[0, 1] = int.Parse(cell3.text);
-        grid[0, 2] = int.Parse(cell6.text);
-
         grid[1, 0] = int.Parse(cell1.text);
-        grid[1, 1] = int.Parse(cell4.text);
-        grid[1, 2] = int.Parse(cell7.text);
-
         grid[2, 0] = int.Parse(cell2.text);
+
+
+        grid[0, 1] = int.Parse(cell3.text);
+        grid[1, 1] = int.Parse(cell4.text);
         grid[2, 1] = int.Parse(cell5.text);
+
+
+        grid[0, 2] = int.Parse(cell6.text);
+        grid[1, 2] = int.Parse(cell7.text);
         grid[2, 2] = int.Parse(cell8.text);
 
         return grid;
@@ -35,9 +37,11 @@ public class Metrix : MonoBehaviour{
         cell.text = grid[0, 0].ToString();
         cell1.text = grid[1, 0].ToString();
         cell2.text = grid[2, 0].ToString();
+
         cell3.text = grid[0, 1].ToString();
         cell4.text = grid[1, 1].ToString();
         cell5.text = grid[2, 1].ToString();
+        
         cell6.text = grid[0, 2].ToString();
         cell7.text = grid[1, 2].ToString();
         cell8.text = grid[2, 2].ToString();

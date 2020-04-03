@@ -11,9 +11,14 @@ public class Root : MonoBehaviour
 
     public Metrix inputMatrix;
     public Metrix outputMatrix;
-    public GameObject content;
+    public RectTransform content;
     private List<GridNode> results;
     public Button stepButton;
+
+    public Text steps;
+    public Text elapsedTime;
+    private float startTime;
+    private int currentStep = 0;
 
     // Start is called before the first frame update
     void Start()
@@ -27,6 +32,9 @@ public class Root : MonoBehaviour
     void Update()
     {
         if(checkNodes.Count > 0 || newNodes.Count > 0){
+            
+            elapsedTime.text = "Time: " + (Time.fixedTime - startTime);
+
             if(checkNodes.Count == 0){
                 checkNodes = newNodes;
                 newNodes = new Queue<GridNode>();
@@ -34,21 +42,24 @@ public class Root : MonoBehaviour
 
             GridNode node = checkNodes.Dequeue();
             if(node.Equals(final)){
-                results.Clear();
                 results.Add(node);
+
                 while (node.GetPrevNode() != null) {
-                    results.Add(node);
                     node = node.GetPrevNode();
+                    results.Add(node);
                 } 
+
+                Debug.Log(results.ToString());
 
                 checkNodes = new Queue<GridNode>();
                 newNodes = new Queue<GridNode>();
 
-                results.Reverse();
-
                 ShowResults();
             } else{
-                Debug.Log(node.ToString());
+              //  Debug.Log(node.ToString());
+
+                currentStep++;
+                steps.text = "Steps: " + currentStep;
                 FindNodes(node, newNodes);
             }            
         }
@@ -57,11 +68,20 @@ public class Root : MonoBehaviour
     private void ShowResults(){
         for(int i = 0; i < results.Count; i++){
             Button button = Instantiate(stepButton) as Button;
-            button.transform.SetParent(content.transform);
-            button.transform.localPosition.Set(0, 0, 0);
+            RectTransform transform = button.GetComponent<RectTransform>();
+            transform.SetParent(content.transform);
+            transform.anchoredPosition = new Vector2(0, -20 * (i + 1));
+            transform.sizeDelta = new Vector2(100, 20);
             button.GetComponentInChildren<Text>().text = "Step: " + i;
-            button.onClick.AddListener(() => {inputMatrix.ShowGrid(results[i].grid);});
+            int index = i;
+            button.onClick.AddListener(() => {
+                ShowGrid(index);
+            });
         }
+    }
+
+    private void ShowGrid(int index){
+        inputMatrix.ShowGrid(results[index].grid);
     }
 
     private static void FindNodes(GridNode prevNode, Queue<GridNode> queue){
@@ -78,7 +98,7 @@ public class Root : MonoBehaviour
         }
         
         if(prevNode.posY + 1 <= 2){
-            queue.Enqueue(new GridNode(prevNode.posY, prevNode.posY + 1, prevNode));
+            queue.Enqueue(new GridNode(prevNode.posX, prevNode.posY + 1, prevNode));
         }
     }
 
@@ -88,6 +108,13 @@ public class Root : MonoBehaviour
     }
 
     public void BruteForce(){
+        results.Clear();
+
+        foreach(Transform child in content){
+            GameObject.Destroy(child.gameObject);
+        }
+
+        startTime = Time.fixedTime;
         final = GetGridFromMatrix(outputMatrix);
         newNodes.Enqueue(GetGridFromMatrix(inputMatrix));
     }

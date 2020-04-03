@@ -1,3 +1,4 @@
+using System;
 namespace Nodes{
 public class GridNode {    
     public int[,] grid {get; private set;}
@@ -18,7 +19,8 @@ public class GridNode {
         this.posY = posY;
         this.prevGrid = prevGrid;
 
-        this.grid = prevGrid.grid.Clone() as int[,];
+        this.grid = new int[3, 3];
+        Array.Copy(prevGrid.grid, grid, prevGrid.grid.Length);
         grid[prevGrid.posX, prevGrid.posY] = grid[posX, posY];
         grid[posX, posY] = 0;
     }
