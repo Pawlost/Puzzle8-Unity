@@ -15,6 +15,7 @@ public class Root : MonoBehaviour
     private List<GridNode> results;
     public Button stepButton;
 
+    public Text evaluated;
     public Text steps;
     public Text elapsedTime;
     private float startTime;
@@ -49,17 +50,19 @@ public class Root : MonoBehaviour
                     results.Add(node);
                 } 
 
-                Debug.Log(results.ToString());
+                steps.text = "Steps: " + results.Count;
 
                 checkNodes = new Queue<GridNode>();
                 newNodes = new Queue<GridNode>();
+
+                results.Reverse();
 
                 ShowResults();
             } else{
               //  Debug.Log(node.ToString());
 
                 currentStep++;
-                steps.text = "Steps: " + currentStep;
+                evaluated.text = "Evaluated: " + currentStep;
                 FindNodes(node, newNodes);
             }            
         }
@@ -109,6 +112,8 @@ public class Root : MonoBehaviour
 
     public void BruteForce(){
         results.Clear();
+
+        currentStep = 0;
 
         foreach(Transform child in content){
             GameObject.Destroy(child.gameObject);
